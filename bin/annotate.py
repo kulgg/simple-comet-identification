@@ -90,11 +90,16 @@ def get_cli() -> argparse.ArgumentParser:
     return parser
 
 
-async def main():
+def main():
     cli = get_cli()
     args = cli.parse_args()
 
-    await process_file(args.tsv_file, args.api_url)
+    loop = asyncio.get_event_loop()
+    tasks = [
+        loop.create_task(process_file(args.tsv_file, args.api_url)),
+    ]
+    loop.run_until_complete(asyncio.wait(tasks))
+    loop.close()
 
 
 if __name__ == "__main__":
