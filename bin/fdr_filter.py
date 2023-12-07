@@ -78,7 +78,8 @@ def mark_decoys(psms: pd.DataFrame, decoy_prefix: str) -> pd.DataFrame:
         PSMs
     """
     protein_col_index = psms.columns.get_loc("protein")
-    psms["is_decoy"] = psms.apply(lambda row: 0 if any([not prot.startswith(decoy_prefix) for prot in row[protein_col_index].split(",")]) else 1, axis=1)
+    for index, row in psms.iterrows():
+        row["is_decoy"] = 0 if any([not prot.startswith(decoy_prefix) for prot in row[protein_col_index].split(",")]) else 1
     return psms
 
 def calc_fdr(psms: pd.DataFrame) -> pd.DataFrame:
