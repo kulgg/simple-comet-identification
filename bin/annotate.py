@@ -20,8 +20,8 @@ async def process_file(input_file: str, api_url: str):
     )
 
     domains_column_idx = len(df.columns)
-    df.insert(domains_column_idx, column="domains", value="None", dtype=str)
-    df.insert(domains_column_idx + 1, column="species", value="None", dtype=str)
+    df.insert(domains_column_idx, column="domains", value="empty")
+    df.insert(domains_column_idx + 1, column="species", value="empty")
 
     def _hit(i, row):
         req_url = "{}/peptides/{}".format(api_url, row["plain_peptide"])
