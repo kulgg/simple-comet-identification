@@ -31,23 +31,15 @@ async def process_file(input_file: str, api_url: str):
                 r = requests.get(req_url)
 
                 if r.status_code == 404:
-                    to_drop.append(i)
                     break
 
                 res = r.json()
                 domain_names = set(map(lambda x: x["name"], res["domains"]))
 
-                if len(domain_names) == 0:
-                    to_drop.append(i)
-                    break
-
                 df.loc[i, "domains"] = ",".join(domain_names)
                 df.loc[i, "species"] = ",".join(
                     set(map(lambda x: str(x), res["taxonomy_ids"]))
                 )
-
-                logging.info("%s", ",".join(domain_names))
-
                 break
             except Exception as exception:
                 logging.info("%s: exception %s", req_url, exception)
