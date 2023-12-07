@@ -26,8 +26,7 @@ async def process_file(input_file: str, api_url: str):
     to_drop = []
 
     def _hit(i, row):
-        is_target = not row["protein"].startswith("moy")
-        if is_target and row["exp_score"] <= 0.01:
+        if not row["is_decoy"]:
             req_url = "{}/peptides/{}".format(api_url, row["plain_peptide"])
 
             while True:
