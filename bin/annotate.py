@@ -20,23 +20,20 @@ async def process_file(input_file: str, api_url: str):
     )
 
     domains_column_idx = len(df.columns)
-    df.insert(domains_column_idx, column="domains", value="None")
-    df.insert(domains_column_idx + 1, column="species", value="None")
+    df.insert(domains_column_idx, column="domains", value="None", dtype=str)
+    df.insert(domains_column_idx + 1, column="species", value="None", dtype=str)
 
     def _hit(i, row):
         req_url = "{}/peptides/{}".format(api_url, row["plain_peptide"])
 
         while True:
             try:
-                print("querying")
                 r = requests.get(req_url)
 
                 if r.status_code == 404:
                     break
-                print("here")
 
                 res = r.json()
-                print(res)
                 domain_names = set(map(lambda x: x["name"], res["domains"]))
 
                 df.loc[i, "domains"] = ",".join(domain_names)
