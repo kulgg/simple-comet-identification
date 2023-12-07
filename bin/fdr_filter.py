@@ -78,7 +78,7 @@ def mark_decoys(psms: pd.DataFrame, decoy_prefix: str) -> pd.DataFrame:
         PSMs
     """
     protein_col_index = psms.columns.get_loc("protein")
-    psms.insert(len(psms.columns - 1), "is_decoy", 0)
+    psms.insert(len(psms.columns) - 1, "is_decoy", 0)
     for i, row in psms.iterrows():
         psms.at[i,'is_decoy'] = 0 if any([not prot.startswith(decoy_prefix) for prot in row[protein_col_index].split(",")]) else 1
     return psms
