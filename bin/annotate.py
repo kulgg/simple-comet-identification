@@ -28,12 +28,15 @@ async def process_file(input_file: str, api_url: str):
 
         while True:
             try:
+                print("querying")
                 r = requests.get(req_url)
 
                 if r.status_code == 404:
                     break
+                print("here")
 
                 res = r.json()
+                print(res)
                 domain_names = set(map(lambda x: x["name"], res["domains"]))
 
                 df.loc[i, "domains"] = ",".join(domain_names)
