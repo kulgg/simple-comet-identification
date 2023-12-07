@@ -8,6 +8,7 @@ params.mzmlDir = ""
 params.resultsDir = ""
 params.fdrThreshold = 0.05
 params.keepDecoys = 0
+params.macpepdbWebApi = ""
 
 // Makes sure the txt output is active
 process adjust_comet_params {
@@ -44,8 +45,6 @@ process search {
 
 
 process filter {
-    publishDir "${params.resultsDir}/psms", mode: 'copy'
-
     input: 
     path "*"
 
@@ -58,6 +57,20 @@ process filter {
     """
 }
 
+process annotate {
+    publishDir "${params.resultsDir}/psms", mode: 'copy'
+
+    input:
+    path "*"
+
+    output:
+    path "*.tsv", includeInputs: true
+
+    """
+    annotate.py *.tsv ${params.macpepdbWebApi}
+    """
+}
+
 
 workflow() {
     mzmls = Channel.fromPath(params.mzmlDir + "/*.{mzML,mzml}")
@@ -66,5 +79,6 @@ workflow() {
     fasta_file = Channel.fromPath(params.fasta)
 
     psms_files = search(comet_param_file_adjusted, fasta_file, mzmls)
-    filter(psms_files)
+    filtered_psm_files = filter(psms_files)
+    annotate(filtered_psm_files)
 }
