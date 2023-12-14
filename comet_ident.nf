@@ -74,9 +74,9 @@ process annotate {
 
 workflow() {
     mzmls = Channel.fromPath(params.mzmlDir + "/*.{mzML,mzml}")
-    comet_param_file = Channel.fromPath(params.cometParams)
+    comet_param_file = Channel.fromPath(params.cometParams).first()
     comet_param_file_adjusted = adjust_comet_params(comet_param_file)
-    fasta_file = Channel.fromPath(params.fasta)
+    fasta_file = Channel.fromPath(params.fasta).first()
 
     psms_files = search(comet_param_file_adjusted, fasta_file, mzmls)
     filtered_psm_files = filter(psms_files)
